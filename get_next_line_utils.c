@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:30 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/23 19:47:50 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/23 21:10:10 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,24 @@
 
 t_fdlist	*fdlist_addnew(t_fdlist **list, int fd)
 {
-	t_fdlist *const new = malloc(sizeof(t_fdlist));
+	t_fdlist *const	new = malloc(sizeof(t_fdlist));
+	t_fdlist		*cur;
+	size_t			idx = 0;
+
 	if (!new)
 		return (0);
-	new->content[BUFFER_SIZE] = 0;
+	while (idx < BUFFER_SIZE + 1)
+		new->content[idx++] = 0;
 	new->fd = fd;
 	new->next = 0;
 	if (!*list)
 		*list = new;
 	else
 	{
-		while ((*list)->next)
-			*list = (*list)->next;
-		(*list)->next = new;
+		cur = *list;
+		while (cur->next)
+			cur = cur->next;
+		cur->next = new;
 	}
 	return (new);
 }
@@ -68,8 +73,9 @@ char	*cstrchr(const char *s, int c)
 
 size_t	strlen_ct(char const *s, char term)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	while (s[i] && s[i] != term)
 		i++;
 	return (i);
@@ -77,16 +83,15 @@ size_t	strlen_ct(char const *s, char term)
 
 char	*strjoin_rct(const char *s1, const char *s2, char s2_terminator)
 {
-	const size_t	desired_size = (strlen_ct(s1, 0) + strlen_ct(s2, s2_terminator) + 1);
+	const size_t	desired_size = (strlen_ct(s1, 0) + strlen_ct(s2,
+				s2_terminator) + 1);
 	size_t			i;
 	size_t			j;
 	char *const		out = malloc(desired_size + (s2[desired_size - 1] != 0));
 
 	if (!out)
 		return (0);
-	i = 0;
-	while (i < desired_size + (s2[desired_size - 1] != 0))
-		out[i++] = 0;
+	out[desired_size + (s2[desired_size - 1] != 0) - 1] = 0;
 	i = 0;
 	j = 0;
 	while (s1[i])
@@ -94,13 +99,12 @@ char	*strjoin_rct(const char *s1, const char *s2, char s2_terminator)
 		out[i] = s1[i];
 		i++;
 	}
-	while (s2[j - 1] != s2_terminator && s2[j] != 0)
+	while (s2[j])
 	{
 		out[i + j] = s2[j];
 		j++;
+		if (s2[j - 1] == s2_terminator)
+			break ;
 	}
-	out[i + j + 1] = 0;
 	return (out);
 }
-
-

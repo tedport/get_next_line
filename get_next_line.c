@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/23 19:49:14 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/23 21:14:13 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,14 +102,15 @@ static char	*extract_line(int fd, t_fdlist *head)
 static bool	put_save_into_stash(char *save, int fd, t_fdlist **head)
 {
 	size_t	idx;
-
-	t_fdlist *const new = fdlist_addnew(head, fd);
+	t_fdlist *const	new = fdlist_addnew(head, fd);
+	
 	if (!new)
 		return (false);
 	idx = 0;
 	while (*(save))
 		new->content[idx++] = *(save++);
 	new->content[idx] = 0;
+	free(save - idx);
 	return (true);
 }
 
