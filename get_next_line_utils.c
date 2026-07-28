@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:30 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/23 21:10:10 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/28 22:39:22 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,11 @@
 
 t_fdlist	*fdlist_addnew(t_fdlist **list, int fd)
 {
-	t_fdlist *const	new = malloc(sizeof(t_fdlist));
 	t_fdlist		*cur;
-	size_t			idx = 0;
+	size_t			idx;
+	t_fdlist *const	new = malloc(sizeof(t_fdlist));
 
+	idx = 0;
 	if (!new)
 		return (0);
 	while (idx < BUFFER_SIZE + 1)
@@ -81,17 +82,16 @@ size_t	strlen_ct(char const *s, char term)
 	return (i);
 }
 
-char	*strjoin_rct(const char *s1, const char *s2, char s2_terminator)
+char	*strjoin_rct(const char *s1, const char *s2, char s2t)
 {
-	const size_t	desired_size = (strlen_ct(s1, 0) + strlen_ct(s2,
-				s2_terminator) + 1);
+	const size_t	desired_size = (strlen_ct(s1, 0) + strlen_ct(s2, s2t) + 1);
 	size_t			i;
 	size_t			j;
-	char *const		out = malloc(desired_size + (s2[desired_size - 1] != 0));
+	char *const		out = malloc(desired_size + (s2[strlen_ct(s2, s2t)] != 0));
 
 	if (!out)
 		return (0);
-	out[desired_size + (s2[desired_size - 1] != 0) - 1] = 0;
+	out[desired_size + (s2[strlen_ct(s2, s2t)] != 0) - 1] = 0;
 	i = 0;
 	j = 0;
 	while (s1[i])
@@ -103,7 +103,7 @@ char	*strjoin_rct(const char *s1, const char *s2, char s2_terminator)
 	{
 		out[i + j] = s2[j];
 		j++;
-		if (s2[j - 1] == s2_terminator)
+		if (s2[j - 1] == s2t)
 			break ;
 	}
 	return (out);
