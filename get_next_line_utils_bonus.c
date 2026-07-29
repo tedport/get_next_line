@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:30 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/29 23:56:02 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/29 23:57:09 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ void	fdlist_clean_for_fd(t_fdlist **list, int fd, bool stop_at_fd)
 	if (!list || !*list)
 		return ;
 	current = list;
-	run = true;
 	while (*current)
 	{
 		if ((*current)->fd == fd)
