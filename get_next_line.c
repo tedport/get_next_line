@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/23 21:14:13 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/29 21:35:04 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,6 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
-
-static char	*save_post_newline(t_fdlist *head, int fd)
-{
-	char	*new;
-	char	*post;
-	size_t	idx;
-
-	idx = 0;
-	while (head)
-	{
-		if (head->fd == fd)
-		{
-			post = cstrchr(head->content, '\n');
-			if (post)
-				break ;
-		}
-		head = head->next;
-	}
-	if (!post)
-		return ((char *)(0xFFFFFFFFFFFFFFFE));
-	if (!*(post++))
-		return ((char *)(0xFFFFFFFFFFFFFFFE));
-	new = malloc(strlen_ct(post, 0) + 1);
-	if (!new)
-		return (0);
-	while (*(post - 1))
-		new[idx++] = *(post++);
-	return (new);
-}
 
 static t_fdlist	*read_and_put(int fd, t_fdlist **list, int *bytes_read)
 {
@@ -55,13 +26,13 @@ static t_fdlist	*read_and_put(int fd, t_fdlist **list, int *bytes_read)
 		last = fdlist_addnew(list, fd);
 		if (!last)
 		{
-			fdlist_clean_for_fd(list, fd);
+			fdlist_clean_for_fd_until_nl(list, fd);
 			return (0);
 		}
 		localread = read(fd, last->content, BUFFER_SIZE);
 		if (localread < 0)
 		{
-			fdlist_clean_for_fd(list, fd);
+			fdlist_clean_for_fd_until_nl(list, fd);
 			return (0);
 		}
 		last->content[localread] = 0;
@@ -99,42 +70,63 @@ static char	*extract_line(int fd, t_fdlist *head)
 	return (out);
 }
 
-static bool	put_save_into_stash(char *save, int fd, t_fdlist **head)
+static void	strip_pre_newline(t_fdlist *head, int fd)
 {
-	size_t	idx;
-	t_fdlist *const	new = fdlist_addnew(head, fd);
-	
-	if (!new)
-		return (false);
-	idx = 0;
-	while (*(save))
-		new->content[idx++] = *(save++);
-	new->content[idx] = 0;
-	free(save - idx);
-	return (true);
+	char	*newline;
+	char	*src;
+	int		i;
+
+	while (head)
+	{
+		if (head->fd == fd)
+		{
+			newline = cstrchr(head->content, '\n');
+			if (newline)
+			{
+				src = newline + 1;
+				i = 0;
+				while (src[i])
+				{
+					head->content[i] = src[i];
+					i++;
+				}
+				head->content[i] = '\0';
+			}
+			return ;
+		}
+		head = head->next;
+	}
+}
+
+static bool	stash_has_newline(t_fdlist *head, int fd)
+{
+	while (head)
+	{
+		if (head->fd == fd && cstrchr(head->content, '\n'))
+			return (true);
+		head = head->next;
+	}
+	return (false);
 }
 
 char	*get_next_line(int fd)
 {
 	static t_fdlist	*head = 0;
 	char			*line;
-	char			*saveme;
 	int				i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) == -1)
 		return (0);
 	i = 0;
-	if (!read_and_put(fd, &head, &i))
-		return (0);
+	if (stash_has_newline(head, fd))
+	{
+		if (!read_and_put(fd, &head, &i))
+			return (0);
+	}
 	line = extract_line(fd, head);
 	if (!line)
 		return (0);
-	saveme = save_post_newline(head, fd);
-	fdlist_clean_for_fd(&head, fd);
-	if (saveme == 0)
-		return (0);
-	if (saveme != (char *)(0xFFFFFFFFFFFFFFFE))
-		if (!put_save_into_stash(saveme, fd, &head))
-			return (0);
+	fdlist_clean_for_fd_until_nl(&head, fd);
+	strip_pre_newline(head, fd);
 	return (line);
 }

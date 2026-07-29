@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:27 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/28 22:39:49 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/29 21:31:57 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 # include <stddef.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1024
+#  define BUFFER_SIZE 4096
 # endif
 
 typedef struct s_fdlist
@@ -26,7 +26,7 @@ typedef struct s_fdlist
 }					t_fdlist;
 
 t_fdlist			*fdlist_addnew(t_fdlist **list, int fd);
-void				fdlist_clean_for_fd(t_fdlist **list, int fd);
+void				fdlist_clean_for_fd_until_nl(t_fdlist **list, int fd);
 char				*strjoin_rct(const char *left, const char *right,
 						char s2_terminator);
 char				*cstrchr(const char *s, int c);
