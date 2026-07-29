@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/29 21:35:04 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/29 22:39:39 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) == -1)
 		return (0);
 	i = 0;
-	if (stash_has_newline(head, fd))
+	if (!stash_has_newline(head, fd))
 	{
 		if (!read_and_put(fd, &head, &i))
 			return (0);
