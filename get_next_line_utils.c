@@ -6,13 +6,12 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:30 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/29 21:06:47 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/29 23:55:10 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdlib.h>
-#include <stdbool.h>
 
 t_fdlist	*fdlist_addnew(t_fdlist **list, int fd)
 {
@@ -39,21 +38,20 @@ t_fdlist	*fdlist_addnew(t_fdlist **list, int fd)
 	return (new);
 }
 
-void	fdlist_clean_for_fd_until_nl(t_fdlist **list, int fd)
+void	fdlist_clean_for_fd(t_fdlist **list, int fd, bool stop_at_fd)
 {
 	t_fdlist	*node_to_free;
 	t_fdlist	**current;
-	bool		run;
 
 	if (!list || !*list)
 		return ;
 	current = list;
 	run = true;
-	while (*current && run)
+	while (*current)
 	{
 		if ((*current)->fd == fd)
 		{
-			if (cstrchr(current[0]->content, '\n'))
+			if (cstrchr(current[0]->content, '\n') && stop_at_fd)
 				return ;
 			node_to_free = *current;
 			*current = (*current)->next;

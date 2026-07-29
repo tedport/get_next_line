@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/29 21:35:04 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/29 23:55:57 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <stdbool.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -26,13 +26,13 @@ static t_fdlist	*read_and_put(int fd, t_fdlist **list, int *bytes_read)
 		last = fdlist_addnew(list, fd);
 		if (!last)
 		{
-			fdlist_clean_for_fd_until_nl(list, fd);
+			fdlist_clean_for_fd(list, fd, 0);
 			return (0);
 		}
 		localread = read(fd, last->content, BUFFER_SIZE);
 		if (localread < 0)
 		{
-			fdlist_clean_for_fd_until_nl(list, fd);
+			fdlist_clean_for_fd(list, fd, 0);
 			return (0);
 		}
 		last->content[localread] = 0;
@@ -118,7 +118,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) == -1)
 		return (0);
 	i = 0;
-	if (stash_has_newline(head, fd))
+	if (!stash_has_newline(head, fd))
 	{
 		if (!read_and_put(fd, &head, &i))
 			return (0);
@@ -126,7 +126,7 @@ char	*get_next_line(int fd)
 	line = extract_line(fd, head);
 	if (!line)
 		return (0);
-	fdlist_clean_for_fd_until_nl(&head, fd);
+	fdlist_clean_for_fd(&head, fd, 1);
 	strip_pre_newline(head, fd);
 	return (line);
 }
