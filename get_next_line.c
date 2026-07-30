@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/29 23:54:45 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/30 21:16:16 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,10 @@ char	*get_next_line(int fd)
 	}
 	line = extract_line(fd, head);
 	if (!line)
+	{
+		fdlist_clean_for_fd(list, fd, 0);
 		return (0);
+	}
 	fdlist_clean_for_fd(&head, fd, 1);
 	strip_pre_newline(head, fd);
 	return (line);
