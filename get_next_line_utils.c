@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:30 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/29 23:56:59 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/07/31 10:33:18 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_fdlist	*fdlist_addnew(t_fdlist **list, int fd)
 
 	idx = 0;
 	if (!new)
-		return (0);
+		return (NULL);
 	while (idx < BUFFER_SIZE + 1)
 		new->content[idx++] = 0;
 	new->fd = fd;
@@ -38,7 +38,7 @@ t_fdlist	*fdlist_addnew(t_fdlist **list, int fd)
 	return (new);
 }
 
-void	fdlist_clean_for_fd(t_fdlist **list, int fd, bool stop_at_fd)
+void	fdlist_clean_for_fd(t_fdlist **list, int fd, bool stop_at_nl)
 {
 	t_fdlist	*node_to_free;
 	t_fdlist	**current;
@@ -50,7 +50,7 @@ void	fdlist_clean_for_fd(t_fdlist **list, int fd, bool stop_at_fd)
 	{
 		if ((*current)->fd == fd)
 		{
-			if (cstrchr(current[0]->content, '\n') && stop_at_fd)
+			if (cstrchr(current[0]->content, '\n') && stop_at_nl)
 				return ;
 			node_to_free = *current;
 			*current = (*current)->next;
@@ -71,7 +71,7 @@ char	*cstrchr(const char *s, int c)
 			break ;
 		s++;
 	}
-	return (0);
+	return (NULL);
 }
 
 size_t	strlen_ct(char const *s, char term)
@@ -92,7 +92,7 @@ char	*strjoin_rct(const char *s1, const char *s2, char s2t)
 	char *const		out = malloc(desired_size + (s2[strlen_ct(s2, s2t)] != 0));
 
 	if (!out)
-		return (0);
+		return (NULL);
 	out[desired_size + (s2[strlen_ct(s2, s2t)] != 0) - 1] = 0;
 	i = 0;
 	j = 0;
