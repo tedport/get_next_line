@@ -2,20 +2,20 @@
 
 # get_next_line
  
-## Description
+# Description
 `get_next_line` is a function that reads a file pointed to by a file descriptor, line by line. 
 
-#### Features
+### Features
 - Reads one line at a time (including the trailing newline, if present).
 - Can read from multiple file descriptors simultaneously (bonus version).
 - Does not load the entire file into memory; it preserves unread data between calls.
 
-#### Goals
+### Goals
 - Learn how to use static variables to preserve state across function calls.
 - Learn low-level file I/O by reading a file line by line, advancing only as needed.
 - Manage memory manually and implement custom standard library utilities.
 
-### Algorithm Explanation
+## Algorithm Explanation
 To read a file line by line, we obviously need somewhere to store our data. I decided to use a linked list for this to avoid `realloc`-style memory allocations. The linked list is defined as follows:
 
 ```c
@@ -48,7 +48,7 @@ Once the consumed nodes are freed, the function finds the first remaining node f
 **Pre-check (`stash_has_newline`)**
 Before issuing any `read()`, the function scans the stash for an existing newline. If one is present, no system call is made: the line is extracted directly from memory. This avoids useless I/O and is essential for correctness when the file has been fully read but a partial line still lives in the stash.
 
-### Justification
+## Justification
 
 Justification of the chosen algorithm:
 - **Linked list of fixed-size nodes** — Simple to implement, avoids re-allocating a single growing buffer, and naturally supports the bonus part: multiple file descriptors share the same list, distinguished by the `fd` field. There is no need for a separate stash per `fd`.
@@ -59,9 +59,9 @@ Justification of the chosen algorithm:
 - **`read(fd, &line, 0)` validation** — Detects invalid or closed file descriptors at the entry of the function in a portable way, without making any assumption about the underlying file type.
 - **Custom string utilities** — Implements `cstrchr`, `strlen_ct`, and `strjoin_rct` to strictly adhere to 42's restrictions on standard library functions while safely calculating exact memory requirements.
 
-## Instructions
+# Instructions
 
-### Usage
+## Usage
 To use the function inside your project, include the `get_next_line` directory with `-I<path>` and add the source files. 
 
 **Mandatory version:**
@@ -80,34 +80,23 @@ You can also change the amount of bytes read per call with `-DBUFFER_SIZE=<Desir
 gcc main.c ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c -I./get_next_line -DBUFFER_SIZE=42
 ```
 
-Here is a basic program, that will print out every line in specified file:
-```c
-#include "get_next_line.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <fcntl.h>
-
-int main()
-{
-	int fd = open("README.md", O_RDONLY);
-	char *line;
-
-	while((line = get_next_line(fd)))
-	{
-		printf("%s", line);
-		free(line);
-	}
-	printf("\n");
-	return (0);
-}
+## Testing
+You can download tests for the project:
+```sh
+git clone https://github.com/tedport/gnlTester.git
+```
+To use the tests, enter the tester directory and call:
+```sh
+uv run pytest -s -v
+```
+Or, to test the bonus part:
+```sh
+uv run pytest -s -v --bonus
 ```
 
-## Testing
-TBD
-
-## Resources
+# Resources
 - `man 2 read`, `man 2 open`, `man 3 malloc`, `man 3 free` — official Linux manual pages.
 - [Linked List Data Structure](https://www.geeksforgeeks.org/dsa/linked-list-data-structure/) - GeeksforGeeks.
 
-### AI Usage
+## AI Usage
 AI was used in the project to partially create testing suites and tailor this README file.
