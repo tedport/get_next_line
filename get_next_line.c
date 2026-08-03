@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/31 10:41:07 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/08/03 19:14:58 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,47 +43,28 @@ static t_fdlist	*read_and_put(int fd, t_fdlist **list, int *bytes_read)
 	return (last);
 }
 
-static char	*strjoin_free(char *s1, const char *s2, char term)
-{
-	char	*new;
-
-	new = strjoin_rct(s1, s2, term);
-	if (!new)
-	{
-		free(s1);
-		return (NULL);
-	}
-	free(s1);
-	return (new);
-}
-
 static char	*extract_line(int fd, t_fdlist *head)
 {
-	char	*out;
-	char	*tmp;
+    char	*buf;
+    char	*out;
 
-	out = malloc(1);
-	if (!out)
-		return (NULL);
-	out[0] = '\0';
-	while (head)
-	{
-		if (head->fd == fd)
-		{
-			out = strjoin_free(out, head->content, '\n');
-			if (!out)
-				return (NULL);
-			if (cstrchr(out, '\n'))
-				break ;
-		}
-		head = head->next;
-	}
-	if (out[0] == '\0')
-	{
-		free(out);
-		return (NULL);
-	}
-	return (out);
+    out = strjoin_rct("", "", 0);
+    while (out && head)
+    {
+        if (head->fd == fd)
+        {
+            buf = out;
+            out = strjoin_rct(buf, head->content, '\n');
+            free(buf);
+            if (out && cstrchr(out, '\n'))
+                break ;
+        }
+        head = head->next;
+    }
+    if (out && *out)
+        return (out);
+    free(out);
+    return (NULL);
 }
 
 static void	strip_pre_newline(t_fdlist *head, int fd)
