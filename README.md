@@ -83,7 +83,7 @@ gcc main.c ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c
 ## Testing
 You can download tests for the project:
 ```sh
-git clone https://github.com/tedport/gnlTester.git
+git clone https://github.com/tedport/GNL-Tester
 ```
 To use the tests, enter the tester directory and call:
 ```sh
