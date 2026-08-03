@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/08/03 19:29:15 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/08/03 19:31:02 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,26 +45,26 @@ static t_fdlist	*read_and_put(int fd, t_fdlist **list, int *bytes_read)
 
 static char	*extract_line(int fd, t_fdlist *head)
 {
-    char	*buf;
-    char	*out;
+	char	*buf;
+	char	*out;
 
-    out = strjoin_rct("", "", 0);
-    while (out && head)
-    {
-        if (head->fd == fd)
-        {
-            buf = out;
-            out = strjoin_rct(buf, head->content, '\n');
-            free(buf);
-            if (out && cstrchr(out, '\n'))
-                break ;
-        }
-        head = head->next;
-    }
-    if (out && *out)
-        return (out);
-    free(out);
-    return (NULL);
+	out = strjoin_rct("", "", 0);
+	while (out && head)
+	{
+		if (head->fd == fd)
+		{
+			buf = out;
+			out = strjoin_rct(buf, head->content, '\n');
+			free(buf);
+			if (out && cstrchr(out, '\n'))
+				break ;
+		}
+		head = head->next;
+	}
+	if (out && *out)
+		return (out);
+	free(out);
+	return (NULL);
 }
 
 static void	strip_pre_newline(t_fdlist *head, int fd)
