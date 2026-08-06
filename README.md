@@ -56,7 +56,6 @@ Justification of the chosen algorithm:
 - **Early termination on `\n` during reading** — Avoids reading more bytes than strictly necessary to produce one line. This keeps memory usage proportional to a single line rather than to the whole file.
 - **Cleanup + shift strategy** — Splitting the work into "free consumed nodes" and "shift leftover bytes" is more readable than a single combined operation and clearly expresses the two post-conditions that must hold after each call: (1) no node still holds a fully consumed line, (2) the first remaining node for this `fd` begins exactly at the start of the next line.
 - **Pre-check before `read()`** — Guarantees that when a previous read fetched more than one line in a single chunk, no extra system call is performed. It also makes the function correct when the file descriptor points to a non-seekable stream (pipes, stdin) where re-reading is not possible.
-- **`read(fd, &line, 0)` validation** — Detects invalid or closed file descriptors at the entry of the function in a portable way, without making any assumption about the underlying file type.
 - **Custom string utilities** — Implements `cstrchr`, `strlen_ct`, and `strjoin_rct` to strictly adhere to 42's restrictions on standard library functions while safely calculating exact memory requirements.
 
 ## Instructions
