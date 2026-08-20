@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:30 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/31 10:33:18 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:03:22 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,20 +38,26 @@ t_fdlist	*fdlist_addnew(t_fdlist **list, int fd)
 	return (new);
 }
 
-void	fdlist_clean_for_fd(t_fdlist **list, int fd, bool stop_at_nl)
+
+void	fdlist_clean_for_fd(t_fdlist **list, int fd, bool preserve_leftovers)
 {
 	t_fdlist	*node_to_free;
 	t_fdlist	**current;
+	char		*nl_pos;
 
 	if (!list || !*list)
 		return ;
 	current = list;
 	while (*current)
 	{
-		if ((*current)->fd == fd)
+		if ((*current)->fd == fd || fd == (int)(0xFFFFFFFF << 1))
 		{
-			if (cstrchr(current[0]->content, '\n') && stop_at_nl)
-				return ;
+			nl_pos = cstrchr((*current)->content, '\n');
+			if (nl_pos && preserve_leftovers)
+			{
+				if (*(nl_pos+1) != 0)
+					return ;
+			}
 			node_to_free = *current;
 			*current = (*current)->next;
 			free(node_to_free);
@@ -79,6 +85,8 @@ size_t	strlen_ct(char const *s, char term)
 	int	i;
 
 	i = 0;
+	if (!s)
+		return (0);
 	while (s[i] && s[i] != term)
 		i++;
 	return (i);
@@ -96,12 +104,12 @@ char	*strjoin_rct(const char *s1, const char *s2, char s2t)
 	out[desired_size + (s2[strlen_ct(s2, s2t)] != 0) - 1] = 0;
 	i = 0;
 	j = 0;
-	while (s1[i])
+	while (s1 && s1[i])
 	{
 		out[i] = s1[i];
 		i++;
 	}
-	while (s2[j])
+	while (s2 && s2[j])
 	{
 		out[i + j] = s2[j];
 		j++;

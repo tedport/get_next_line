@@ -65,18 +65,18 @@ To use the function inside your project, include the `get_next_line` directory w
 
 **Mandatory version:**
 ```bash
-gcc -Wall -Wextra -Werror main.c ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c -I./get_next_line
+cc -Wall -Wextra -Werror main.c ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c -I./get_next_line
 ```
 
 **Bonus version (multiple file descriptors):**
 ```bash
-gcc -Wall -Wextra -Werror main.c ./get_next_line/get_next_line_bonus.c ./get_next_line/get_next_line_utils_bonus.c -I./get_next_line
+cc -Wall -Wextra -Werror main.c ./get_next_line/get_next_line_bonus.c ./get_next_line/get_next_line_utils_bonus.c -I./get_next_line
 ```
 
 You can also change the amount of bytes read per call with `-DBUFFER_SIZE=<Desired size>`:
 
 ```bash
-gcc main.c ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c -I./get_next_line -DBUFFER_SIZE=42
+cc main.c ./get_next_line/get_next_line.c ./get_next_line/get_next_line_utils.c -I./get_next_line -DBUFFER_SIZE=42
 ```
 
 
@@ -115,6 +115,8 @@ Or, to test the bonus part:
 ```sh
 uv run pytest -s -v --bonus
 ```
+#### Note
+Technically you can use those tests, however they have problems I have no intention to fix at the moment, so, it's advised against using them
 
 # Resources
 - `man 2 read`, `man 2 open`, `man 3 malloc`, `man 3 free` — official Linux manual pages.

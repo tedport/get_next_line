@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:27 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/07/31 09:52:46 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:03:50 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ typedef struct s_fdlist
 
 t_fdlist			*fdlist_addnew(t_fdlist **list, int fd);
 void				fdlist_clean_for_fd(t_fdlist **list, int fd,
-						bool stop_at_nl);
+						bool preserve_leftovers);
 char				*strjoin_rct(const char *left, const char *right, char rct);
 char				*cstrchr(const char *s, int c);
 size_t				strlen_ct(char const *s, char term);

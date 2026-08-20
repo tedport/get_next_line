@@ -6,7 +6,7 @@
 /*   By: vtarasov <vtarasov@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/09 14:14:29 by vtarasov          #+#    #+#             */
-/*   Updated: 2026/08/05 10:19:58 by vtarasov         ###   ########.fr       */
+/*   Updated: 2026/08/20 21:07:02 by vtarasov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,15 +95,15 @@ static void	strip_pre_newline(t_fdlist *head, int fd)
 	}
 }
 
-static bool	stash_has_newline(t_fdlist *head, int fd)
+static char	*stash_has_newline(t_fdlist *head, int fd)
 {
 	while (head)
 	{
 		if (head->fd == fd && cstrchr(head->content, '\n'))
-			return (true);
+			return (cstrchr(head->content, '\n'));
 		head = head->next;
 	}
-	return (false);
+	return (NULL);
 }
 
 char	*get_next_line(int fd)
@@ -113,10 +113,7 @@ char	*get_next_line(int fd)
 	int				i;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
-	{
-		fdlist_clean_for_fd(&head, fd, false);
 		return (NULL);
-	}
 	i = 0;
 	if (!stash_has_newline(head, fd))
 	{
